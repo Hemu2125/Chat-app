@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState} from 'react';
 import { Link , useNavigate} from 'react-router-dom';
 import "../index.css";
 import {toast,ToastContainer} from "react-toastify";
@@ -17,7 +17,7 @@ function Register() {
     const handleSubmit = async (event) =>{
         event.preventDefault()
         if(handleValidation()){
-            const {username,email,password,confirmPassword}=values;
+            const {username,email,password}=values;
             const {data} = await axios.post(registerRoute,{
                 username,email,password,
             });

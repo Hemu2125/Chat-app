@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { setAvatarRoute } from "../utils/APIRoutes";
 
 export default function SetAvatar() {
-  const api = `https://api.multiavatar.com/4645646`;
+  const api = `https://api.multiavatar.com/46456743`;
   const navigate = useNavigate();
   const [avatars, setAvatars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +24,7 @@ export default function SetAvatar() {
   useEffect(() => {
     if (!localStorage.getItem("chat-app-user"))
       navigate("/login");
-  });
+  },[]);
 
   const setProfilePicture = async () => {
     if (selectedAvatar === undefined) {
@@ -82,7 +82,7 @@ export default function SetAvatar() {
             isMounted = false; // Cleanup: Mark component as unmounted
             // Any other cleanup logic here
           };
-        });
+        },[]);
   return (
     <>
       {isLoading ? (
