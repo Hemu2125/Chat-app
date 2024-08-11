@@ -18,7 +18,6 @@ export const register = async(req,res,next) =>{
     delete userResponse.password;
     return res.json({ status: true, user: userResponse });
   } catch (exp) {
-    console.error(exp); // Log the error for debugging
     next(exp);
   }
 };
@@ -54,4 +53,21 @@ export const setAvatar = async(req,res,next) =>{
   }
 };
 
+export const getAllUsers = async(req,res,next) =>{
+  try{
+    const userId = req.params.id;
+    
+    const users = await User.find({_id:{$ne:userId}}).select([
+      "email",
+      "username",
+      "avatarImg",
+      "_id",
+    ]);
+    
+    return res.json(users);
+    }catch(ex){
+      
+    next(ex)
+  }
+};
 
