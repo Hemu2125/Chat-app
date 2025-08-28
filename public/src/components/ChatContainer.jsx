@@ -56,15 +56,16 @@ export default function ChatContainer({currentChat,currentUser,socket}) {
           setArrivalMessage({fromSelf:false,message:msg});
         });
       }
-    },[]);
+    },[socket]);
+
     useEffect(()=>{
       arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
-
     },[arrivalMessage]);
 
     useEffect(()=>{
       scrollRef.current?.scrollIntoView({behaviour: "smooth"});
     },[messages]);
+
   return (
     <>
     {currentChat && 
@@ -73,8 +74,8 @@ export default function ChatContainer({currentChat,currentUser,socket}) {
         <div className="user-details">
           <div className="avatar">
             <img
-              src={`data:image/svg+xml;base64,${currentChat.avatarImg}`}
-              alt=""
+              src={`${currentChat.avatarImg}`}
+              alt="avatar"
             />
           </div>
           <div className="username">
@@ -86,7 +87,7 @@ export default function ChatContainer({currentChat,currentUser,socket}) {
       <div className="chat-messages">  
       {
         messages.map((message, index) => (
-          <div key={uuidv4()} ref={scrollRef}>
+          <div key={uuidv4()}>
             <div className={`message ${message.fromSelf ? "sended" : "recieved"}`}>
               <div className="content-msg">
                 <p>{message.message}</p>
@@ -95,6 +96,7 @@ export default function ChatContainer({currentChat,currentUser,socket}) {
           </div>
         ))
       }
+          <div ref={scrollRef} />
         </div>
         <ChatInput handleSendMsg={handleSendMsg}/>
         

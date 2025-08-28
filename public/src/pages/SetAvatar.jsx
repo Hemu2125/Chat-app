@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { setAvatarRoute } from "../utils/APIRoutes";
 
 export default function SetAvatar() {
-  const api = `https://api.multiavatar.com/46456743`;
+  const api = `https://avatar.iran.liara.run/public/`;
   const navigate = useNavigate();
   const [avatars, setAvatars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,13 +24,13 @@ export default function SetAvatar() {
   useEffect(() => {
     if (!localStorage.getItem("chat-app-user"))
       navigate("/login");
-  },[]);
+  },[navigate]);
 
   const setProfilePicture = async () => {
     if (selectedAvatar === undefined) {
       toast.error("Please select an avatar", toastOptions);
     } else {
-      const user = await JSON.parse(
+      const user = JSON.parse(
         localStorage.getItem("chat-app-user")
       );
 
@@ -45,7 +45,7 @@ export default function SetAvatar() {
            "chat-app-user",
           JSON.stringify(user)
         );
-        navigate("/");
+        setTimeout(() => navigate("/"), 1000);
       } else {
         toast.error("Error setting avatar. Please try again.", toastOptions);
       }
@@ -53,15 +53,20 @@ export default function SetAvatar() {
   };
 
   useEffect(() => {
-          let isMounted = true; // Flag to check if component is mounted
         
           const fetchData = async () => {
             const data = [];
             for (let i = 0; i < 4; i++) {
               try {
-                const image = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`);
-                const buffer = await Buffer(image.data);
-                data.push(buffer.toString("base64"));
+                const idx = Math.floor(Math.random() * 100) + 1;
+                const image = await axios.get(`${api}/${idx}.png}`, {
+            responseType: 'arraybuffer'
+          });
+                const base64 = Buffer.from(image.data, 'binary').toString('base64');
+                const dataUrl = `data:image/png;base64,${base64}`;
+          
+                data.push(dataUrl);
+                console.log("image extracted")
               } catch (error) {
                 if (error.response && error.response.status === 429) {
                   console.error("Too many requests. Please try again later.");
@@ -71,18 +76,12 @@ export default function SetAvatar() {
                 break; // Exit the loop on error
               }
             }
-            if (isMounted) {
               setAvatars(data);
               setIsLoading(false);
-            }
           }
         
           fetchData();
-          return () => {
-            isMounted = false; // Cleanup: Mark component as unmounted
-            // Any other cleanup logic here
-          };
-        },[]);
+        },[api]);
   return (
     <>
       {isLoading ? (
@@ -103,9 +102,9 @@ export default function SetAvatar() {
                   }`}
                 >
                   <img
-                    src={`data:image/svg+xml;base64,${avatar}`}
+                    src={avatar}
                     alt="avatar"
-                    key={avatar}
+                    key={index}
                     onClick={() => setSelectedAvatar(index)}
                   />
                 </div>
